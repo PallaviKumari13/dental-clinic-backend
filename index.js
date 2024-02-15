@@ -1,14 +1,14 @@
 const express = require("express");
 const server = express();
 const mongoose = require("mongoose");
-const { register, login, findUsers } = require("./src/Controllers/auth");
+const { register, login, findUsers, appointment } = require("./src/Controllers/auth");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const { verifytoken, validateForm, isValidated } = require("./src/Middlewares");
 const { sendEmail } = require("./src/Helper/Email");
 const { addForm } = require("./src/Controllers/Form");
-
+const Patient = require("./src/Models/Patient");
 
 const app = http.createServer(server);
 const io = new Server(app);
@@ -26,6 +26,10 @@ server.get("/", (req, res) => {
 
 server.post("/register", register, sendEmail);
 server.post("/login", login);
+server.post("/appointment", appointment); 
+server.post("/patient",Patient);
+// Define the paymentdetails function or remove the endpoint if not needed
+// server.post("/paymentdetails", paymentdetails);
 server.get("/get-user", verifytoken, findUsers);
 server.post("/form", validateForm, isValidated, addForm);
 
@@ -45,8 +49,8 @@ io.on("connection", socket => {
 });
 
 // Move the listen call here
-app.listen( 3000, () => {
-    console.log('Connected to port');
+app.listen(3000, () => {
+    console.log('Connected to port 3000');
 });
 
 // For connecting to the database
